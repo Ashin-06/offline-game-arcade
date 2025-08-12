@@ -1,0 +1,14 @@
+# IDE and editor files
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Packed extension files (if you create them)
+*.zip
+*.crx
+
+# Node modules (if you ever add a build process)
+node_modules/

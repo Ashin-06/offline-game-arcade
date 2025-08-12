@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Play Memory Match</title>
+    <link rel="stylesheet" href="memory.css">
+</head>
+<body>
+    <h1>Memory Match</h1>
+
+    <!-- NEW: Settings Panel -->
+    <div class="settings">
+        <div class="setting-item">
+            <label for="pairsInput">Unique Items:</label>
+            <input type="number" id="pairsInput" value="8" min="4" max="12">
+        </div>
+        <div class="setting-item">
+            <label for="matchCountInput">Match Size:</label>
+            <select id="matchCountInput">
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+        <button id="newGameButton">New Game</button>
+    </div>
+
+    <!-- NEW: Game Info Bar -->
+    <div class="game-info">
+        <span>Moves: <span id="moves-count">0</span></span>
+        <span>Score: <span id="score-count">0</span></span>
+    </div>
+
+    <section class="memory-game"></section>
+
+    <script src="memory.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Play Snake</title>
+    <link rel="stylesheet" href="snake.css">
+</head>
+<body>
+    <canvas id="snakeCanvas" width="600" height="600"></canvas>
+    
+    <div class="controls">
+        <div class="control-group">
+            <label for="speedSlider">Speed:</label>
+            <input type="range" id="speedSlider" min="1" max="10" value="4">
+            <span id="speedValue">4</span>
+        </div>
+        <div class="control-group">
+            <p class="instructions">Use Arrow Keys to Move</p>
+        </div>
+        <button id="restartButton">Restart Game</button>
+    </div>
+
+    <script src="snake.js"></script>
+</body>
+</html>

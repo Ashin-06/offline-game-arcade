@@ -1,0 +1,150 @@
+body {
+    background-color: #1e272e; /* Dark background */
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.game-container {
+    background-color: #2c3e50; /* Dark container */
+    border-radius: 6px;
+    padding: 15px;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ecf0f1;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 4em;
+    margin: 0;
+    color: #48dbfb;
+}
+
+.info-box {
+    text-align: right;
+}
+
+.score-container {
+    background-color: #34495e;
+    padding: 5px 25px;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+    color: #bdc3c7;
+}
+
+#score {
+    display: block;
+    font-size: 1.5em;
+    color: white;
+}
+
+#restartButton {
+    margin-top: 8px;
+    padding: 10px 15px;
+    background: #e74c3c;
+    color: #f9f6f2;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.instructions {
+    color: #bdc3c7;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 15px;
+    background-color: #34495e;
+    padding: 15px;
+    border-radius: 6px;
+    position: relative;
+}
+
+.grid-cell {
+    background-color: #4a627a;
+    border-radius: 3px;
+}
+
+.tile {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 2.5em;
+    transition: 100ms ease-in-out;
+    animation: appear 200ms ease-in-out;
+}
+
+.game-message-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(44, 62, 80, 0.9);
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 100;
+}
+
+.game-message-overlay.show {
+    display: flex;
+}
+
+#gameMessageText {
+    font-size: 4em;
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+#continueButton, #tryAgainButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 0.5em;
+    background: #2ecc71;
+    color: #f9f6f2;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Tile Colors (New Vibrant Scheme) */
+[data-value="2"]    { background: #7f8c8d; color: #ecf0f1; }
+[data-value="4"]    { background: #95a5a6; color: #ecf0f1; }
+[data-value="8"]    { background: #e67e22; color: #f9f6f2; }
+[data-value="16"]   { background: #d35400; color: #f9f6f2; }
+[data-value="32"]   { background: #e74c3c; color: #f9f6f2; }
+[data-value="64"]   { background: #c0392b; color: #f9f6f2; }
+[data-value="128"]  { background: #edcf72; color: #f9f6f2; font-size: 2em; }
+[data-value="256"]  { background: #edcc61; color: #f9f6f2; font-size: 2em; }
+[data-value="512"]  { background: #2ecc71; color: #f9f6f2; font-size: 2em; }
+[data-value="1024"] { background: #3498db; color: #f9f6f2; font-size: 1.5em; }
+[data-value="2048"] { background: #9b59b6; color: #f9f6f2; font-size: 1.5em; }
+[data-value="4096"] { background: #34495e; border: 5px solid #e74c3c; color: #f9f6f2; font-size: 1.5em; }
+[data-value="8192"] { background: #34495e; border: 5px solid #f1c40f; color: #f1c40f; font-size: 1.5em; }
+
+
+@keyframes appear {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}

@@ -1,0 +1,60 @@
+body {
+    display: flex;
+    flex-direction: column; /* CHANGED: Arrange items vertically */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #1e272e;
+    font-family: sans-serif;
+}
+#snakeCanvas {
+    border: 3px solid #48dbfb;
+    background-color: #000;
+}
+
+/* NEW: Styles for the entire control panel */
+.controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 600px;
+    padding: 15px 0;
+    background-color: #34495e;
+    color: white;
+    border-radius: 0 0 10px 10px;
+    box-sizing: border-box;
+}
+
+/* NEW: Styles for individual control groups */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.control-group label {
+    font-weight: bold;
+}
+.control-group input[type="range"] {
+    width: 120px;
+}
+.instructions {
+    font-style: italic;
+    color: #bdc3c7;
+    margin: 0;
+}
+
+#restartButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #2ecc71; /* Green color */
+    color: white;
+    transition: background-color 0.2s;
+}
+#restartButton:hover {
+    background-color: #27ae60;
+}

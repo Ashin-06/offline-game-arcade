@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Play Space Invaders</title>
+    <link rel="stylesheet" href="spaceinvaders.css">
+</head>
+<body>
+    <canvas id="invadersCanvas" width="800" height="600"></canvas>
+    <div class="controls">
+        <div class="control-group">
+            <label for="speedSlider">Invader Speed:</label>
+            <input type="range" id="speedSlider" min="1" max="10" value="3">
+            <span id="speedValue">3</span>
+        </div>
+        <button id="restartButton">Restart Game</button>
+    </div>
+    <script src="spaceinvaders.js"></script>
+</body>
+</html>
