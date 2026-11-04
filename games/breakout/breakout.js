@@ -1,214 +1,89 @@
-const canvas = document.getElementById('breakoutCanvas');
-const ctx = canvas.getContext('2d');
-const restartButton = document.getElementById('restartButton');
-const speedSlider = document.getElementById('speedSlider');
-const speedValueSpan = document.getElementById('speedValue');
+const { W, H, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, PADDLE_Y, R } = BreakoutLogic;
+const canvas = document.getElementById('field');
+const ctx = Arcade.hidpi(canvas, W, H);
+const ROW_COLORS = ['#ff6b81', '#ffb86b', '#ffe27a', '#6be3c3', '#7cc4ff'];
+let state = BreakoutLogic.create();
 
-// Game constants
-const ballRadius = 10;
-const paddleHeight = 15;
-const paddleWidth = 100;
-const brickRowCount = 5;
-const brickColumnCount = 9;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+const shell = Arcade.game({
+  id: 'breakout',
+  title: 'Breakout',
+  stats: ['Lives'],
+  how: 'Clear every brick. Move with the <kbd>mouse</kbd>, a finger or <kbd>Left</kbd>/<kbd>Right</kbd>. Launch with <kbd>Space</kbd> or a tap. Hit the ball with the edge of the paddle to send it wide.',
+  options: [
+    { id: 'speed', label: 'Ball speed', default: 'normal', choices: [['slow', 'Slow'], ['normal', 'Normal'], ['fast', 'Fast']] },
+  ],
+  keys: ['ArrowLeft', 'ArrowRight', 'a', 'd', ' ', 'ArrowUp'],
+  pad: [
+    { key: 'ArrowLeft', label: '◀', name: 'Move left' },
+    { key: ' ', label: 'Launch', name: 'Launch ball' },
+    { key: 'ArrowRight', label: '▶', name: 'Move right' },
+  ],
+  onStart(opts) {
+    state = BreakoutLogic.create({ speed: opts.speed });
+    shell.stat('Lives', state.lives);
+  },
+  onKey(key, down) {
+    if (down && (key === ' ' || key === 'ArrowUp')) BreakoutLogic.launch(state);
+  },
+});
 
-// Game state variables
-let x, y, dx, dy, paddleX, rightPressed, leftPressed, score, lives;
-let bricks = [];
-let gameLoopId;
-let isPaused = false; // NEW: To handle pauses
-let gameOver = false; // NEW: To handle game over state
+function pointerToPaddle(e) {
+  BreakoutLogic.setPaddle(state, Arcade.pointerPos(canvas, e, W, H).x);
+}
+canvas.addEventListener('pointermove', (e) => { if (shell.playing) pointerToPaddle(e); });
+canvas.addEventListener('pointerdown', (e) => {
+  if (!shell.playing) return;
+  pointerToPaddle(e);
+  BreakoutLogic.launch(state);
+});
 
-function initializeGame() {
-    if (gameLoopId) {
-        cancelAnimationFrame(gameLoopId);
-    }
-    gameOver = false;
-    isPaused = false;
-    score = 0;
-    lives = 3;
-    rightPressed = false;
-    leftPressed = false;
-    createBricks();
-    resetBallAndPaddle();
-    gameLoop();
+function step(dt) {
+  const left = shell.keys.has('ArrowLeft') || shell.keys.has('a');
+  const right = shell.keys.has('ArrowRight') || shell.keys.has('d');
+  const event = BreakoutLogic.step(state, dt, (right ? 1 : 0) - (left ? 1 : 0));
+  if (!event) return;
+  if (event === 'bounce') shell.sound('bounce');
+  if (event === 'paddle') shell.sound('hit');
+  if (event === 'brick' || event === 'cleared') {
+    shell.sound('tap');
+    shell.score(state.score);
+  }
+  if (event === 'miss') {
+    shell.sound('hurt');
+    shell.stat('Lives', state.lives);
+    shell.say(`${state.lives} lives left`);
+  }
+  if (event === 'lost') {
+    shell.stat('Lives', 0);
+    shell.over({ title: 'Game over', text: `${state.remaining} bricks were left.` });
+  }
+  if (event === 'cleared') shell.over({ title: 'Wall cleared', text: `With ${state.lives} ${state.lives === 1 ? 'life' : 'lives'} left.`, win: true });
 }
 
-function resetBallAndPaddle() {
-    x = canvas.width / 2;
-    y = canvas.height - 50;
-    paddleX = (canvas.width - paddleWidth) / 2;
-    // Set initial speed and direction
-    const speed = parseInt(speedSlider.value);
-    const baseSpeed = 4;
-    const speedMultiplier = speed / 4;
-    dx = baseSpeed * speedMultiplier * (Math.random() < 0.5 ? 1 : -1); // Random horizontal start
-    dy = -baseSpeed * speedMultiplier; // Always start going up
-}
-
-function createBricks() {
-    bricks = [];
-    for (let c = 0; c < brickColumnCount; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < brickRowCount; r++) {
-            bricks[c][r] = { x: 0, y: 0, status: 1 };
-        }
-    }
-}
-
-function updateSpeed() {
-    const speed = parseInt(speedSlider.value);
-    speedValueSpan.textContent = speed;
-    
-    // Don't change speed if paused or game is over, only update display
-    if (isPaused || gameOver) return;
-
-    const baseSpeed = 4;
-    const speedMultiplier = speed / 4;
-    
-    // Preserve direction when changing speed
-    const currentDxSign = Math.sign(dx) || 1;
-    const currentDySign = Math.sign(dy) || -1;
-    dx = baseSpeed * speedMultiplier * currentDxSign;
-    dy = baseSpeed * speedMultiplier * currentDySign;
-}
-
-function collisionDetection() {
-    for (let c = 0; c < brickColumnCount; c++) {
-        for (let r = 0; r < brickRowCount; r++) {
-            const b = bricks[c][r];
-            if (b.status === 1) {
-                if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
-                    dy = -dy;
-                    b.status = 0;
-                    score++;
-                    if (score === brickRowCount * brickColumnCount) {
-                        gameOver = true;
-                    }
-                }
-            }
-        }
-    }
-}
-
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBricks();
-    drawBall();
-    drawPaddle();
-    drawInfo();
-}
-
-function drawBall() {
+function render() {
+  ctx.fillStyle = '#080b18';
+  ctx.fillRect(0, 0, W, H);
+  for (const brick of state.bricks) {
+    if (!brick.alive) continue;
+    ctx.fillStyle = ROW_COLORS[brick.row];
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "#0095DD";
+    ctx.roundRect(brick.x, brick.y, BRICK_W, BRICK_H, 4);
     ctx.fill();
-    ctx.closePath();
+  }
+  ctx.fillStyle = '#eef1fb';
+  ctx.beginPath();
+  ctx.roundRect(state.paddle - PADDLE_W / 2, PADDLE_Y, PADDLE_W, PADDLE_H, 7);
+  ctx.fill();
+  ctx.fillStyle = '#ffe27a';
+  ctx.beginPath();
+  ctx.arc(state.ball.x, state.ball.y, R, 0, Math.PI * 2);
+  ctx.fill();
+  if (state.held && shell.playing) {
+    ctx.fillStyle = '#a3acd0';
+    ctx.font = '500 22px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Space or tap to launch', W / 2, H / 2 + 40);
+  }
 }
 
-function drawPaddle() {
-    ctx.beginPath();
-    ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
-}
-
-function drawBricks() {
-    for (let c = 0; c < brickColumnCount; c++) {
-        for (let r = 0; r < brickRowCount; r++) {
-            if (bricks[c][r].status === 1) {
-                const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
-                const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
-                ctx.beginPath();
-                ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
-                ctx.fill();
-                ctx.closePath();
-            }
-        }
-    }
-}
-
-function drawInfo() {
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
-    ctx.fillText("Score: " + score, 8, 20);
-    ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
-}
-
-function gameLoop() {
-    // NEW: Handle Game Over state
-    if (gameOver) {
-        ctx.font = "50px Arial";
-        ctx.fillStyle = "red";
-        ctx.textAlign = "center";
-        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-        ctx.textAlign = "start";
-        return; // Stop the game loop
-    }
-
-    draw();
-
-    // NEW: Handle pause state after losing a life
-    if (isPaused) {
-        gameLoopId = requestAnimationFrame(gameLoop);
-        return;
-    }
-
-    collisionDetection();
-
-    // Wall collision
-    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) dx = -dx;
-    if (y + dy < ballRadius) dy = -dy;
-    else if (y + dy > canvas.height - ballRadius) {
-        if (x > paddleX && x < paddleX + paddleWidth) {
-            dy = -dy;
-        } else {
-            lives--;
-            if (!lives) {
-                gameOver = true;
-            } else {
-                // NEW: Pause for 1.5 seconds after losing a life
-                isPaused = true;
-                setTimeout(() => {
-                    resetBallAndPaddle();
-                    isPaused = false;
-                }, 1500);
-            }
-        }
-    }
-
-    if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 7;
-    else if (leftPressed && paddleX > 0) paddleX -= 7;
-
-    x += dx;
-    y += dy;
-
-    gameLoopId = requestAnimationFrame(gameLoop);
-}
-
-// --- Event Listeners ---
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
-    else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
-});
-document.addEventListener("keyup", (e) => {
-    if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
-    else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
-});
-restartButton.addEventListener('click', () => {
-    initializeGame();
-    restartButton.blur();
-});
-speedSlider.addEventListener('input', updateSpeed);
-
-// --- Initial Game Start ---
-initializeGame();
+Arcade.loop({ running: () => shell.playing, step, render });

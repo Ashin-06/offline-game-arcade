@@ -1,19 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Play Tetris</title>
-    <link rel="stylesheet" href="tetris.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tetris - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
 </head>
-<body>
-    <div class="game-container">
-        <h1>Tetris</h1>
-        <canvas id="tetrisCanvas"></canvas>
-        <div class="game-info">
-            <div id="score-container">Score: <span id="score">0</span></div>
-            <button id="restartButton">Restart</button>
-        </div>
-    </div>
-    <script src="tetris.js"></script>
+<body class="game" style="--accent: #c6a3ff">
+  <main class="stage">
+    <canvas id="board" width="360" height="600" role="img" aria-label="Falling block well"></canvas>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="tetris.logic.js"></script>
+  <script src="tetris.js"></script>
 </body>
 </html>

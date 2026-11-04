@@ -1,19 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Offline Game Arcade",
-  "version": "1.0",
-  "description": "Play a collection of fun games when your internet is down.",
-  "permissions": [
-    "tabs",
-    "webNavigation",
-    "storage",
-    "notifications" 
-  ],
+  "version": "2.0.0",
+  "description": "Thirteen games that open by themselves when your connection is down, or from the toolbar at any time.",
+  "minimum_chrome_version": "108",
+  "permissions": ["webNavigation"],
   "background": {
     "service_worker": "background.js"
   },
+  "action": {
+    "default_title": "Open Offline Game Arcade",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
   "icons": {
     "16": "icons/icon16.png",
-    "48": "icons/icon48.png"
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
 }

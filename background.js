@@ -1,67 +1,50 @@
-// A unique ID for our notification
-const NOTIFICATION_ID = 'reconnect-notification';
+// Sends a tab to the game hub when a page fails because the connection is down.
+const DISCONNECTED = 'net::ERR_INTERNET_DISCONNECTED';
+// These also happen online: a mistyped address, one broken site. They only count once a probe
+// confirms that the wider internet is unreachable too.
+const MAYBE_OFFLINE = new Set([
+  'net::ERR_NAME_NOT_RESOLVED',
+  'net::ERR_CONNECTION_RESET',
+  'net::ERR_CONNECTION_TIMED_OUT',
+  'net::ERR_TIMED_OUT',
+  'net::ERR_ADDRESS_UNREACHABLE',
+  'net::ERR_NETWORK_CHANGED',
+  'net::ERR_NETWORK_IO_SUSPENDED',
+]);
+const PROBE_URL = 'https://www.gstatic.com/generate_204';
+const PROBE_TIMEOUT_MS = 4000;
+const PROBE_ATTEMPTS = 2;
+const BACK_BUTTON_WINDOW_MS = 15000;
 
-// 1. Listen for when a web navigation error occurs
-chrome.webNavigation.onErrorOccurred.addListener((details) => {
-  const networkErrors = [
-    "net::ERR_INTERNET_DISCONNECTED",
-    "net::ERR_NAME_NOT_RESOLVED",
-    "net::ERR_CONNECTION_RESET",
-    "net::ERR_CONNECTION_TIMED_OUT"
-  ];
-
-  if (networkErrors.includes(details.error) && details.frameId === 0) {
-    // UPDATED: Save the URL the user was trying to access
-    if (details.url && !details.url.startsWith('chrome-extension://')) {
-      chrome.storage.local.set({ lastUrl: details.url });
-    }
-    
-    const offlinePageUrl = chrome.runtime.getURL("offline.html");
-    chrome.tabs.update(details.tabId, { url: offlinePageUrl });
+async function isOffline(error) {
+  if (error === DISCONNECTED || !navigator.onLine) return true;
+  if (!MAYBE_OFFLINE.has(error)) return false;
+  // A single request can stall on a healthy connection, so one failure proves nothing.
+  for (let attempt = 0; attempt < PROBE_ATTEMPTS; attempt++) {
+    try {
+      await fetch(PROBE_URL, { mode: 'no-cors', cache: 'no-store', signal: AbortSignal.timeout(PROBE_TIMEOUT_MS) });
+      return false;
+    } catch { /* try again, then give up */ }
   }
-}, {
-  url: [{ schemes: ["http", "https"] }]
-});
+  return true;
+}
 
+// Pressing Back on the hub reloads the failed page. Sending that straight back to the hub again
+// would trap the user, so the same page in the same tab only redirects once in a short while.
+const lastRedirect = new Map();
 
-// 2. Listen for when the browser comes back online
-self.addEventListener('online', () => {
-  // NEW: Create a desktop notification
-  chrome.storage.local.get('lastUrl', (data) => {
-    let message = "You can now browse the web again.";
-    if (data.lastUrl) {
-      message = "Click 'Reconnect' to return to your last page.";
-    }
+chrome.webNavigation.onErrorOccurred.addListener(async ({ frameId, tabId, url, error }) => {
+  if (frameId !== 0 || !(await isOffline(error))) return;
+  const previous = lastRedirect.get(tabId);
+  if (previous && previous.url === url && Date.now() - previous.at < BACK_BUTTON_WINDOW_MS) return;
+  lastRedirect.set(tabId, { url, at: Date.now() });
+  const hub = `${chrome.runtime.getURL('offline.html')}?from=${encodeURIComponent(url)}`;
+  chrome.tabs.update(tabId, { url: hub }).catch(() => { /* the tab has closed */ });
+}, { url: [{ schemes: ['http', 'https'] }] });
 
-    chrome.notifications.create(NOTIFICATION_ID, {
-      type: 'basic',
-      iconUrl: 'icons/icon48.png',
-      title: 'Internet Connection Restored!',
-      message: message,
-      buttons: [
-        { title: 'Reconnect' } 
-      ],
-      priority: 2
-    });
-  });
-});
+chrome.tabs.onRemoved.addListener((tabId) => lastRedirect.delete(tabId));
 
-// 3. Listen for when the "Reconnect" button on the notification is clicked
-chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
-  if (notificationId === NOTIFICATION_ID && buttonIndex === 0) {
-    chrome.storage.local.get('lastUrl', (data) => {
-      if (data.lastUrl) {
-        // Find the currently active tab (which is showing an offline page)
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs[0]) {
-            // Update its URL to the one we saved
-            chrome.tabs.update(tabs[0].id, { url: data.lastUrl });
-            // Clean up
-            chrome.storage.local.remove('lastUrl');
-            chrome.notifications.clear(NOTIFICATION_ID);
-          }
-        });
-      }
-    });
-  }
+// The toolbar button opens the arcade at any time, online or not.
+chrome.action.onClicked.addListener(() => {
+  chrome.tabs.create({ url: chrome.runtime.getURL('offline.html') });
 });

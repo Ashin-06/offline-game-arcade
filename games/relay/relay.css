@@ -1,0 +1,27 @@
+#board {
+  --cell: min(calc((100vw - 28px) / var(--size, 5)), calc((100dvh - 130px) / var(--size, 5)), 92px);
+  display: grid;
+  grid-template-columns: repeat(var(--size, 5), var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: 2px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--ink-3);
+}
+.tile {
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: #12172e;
+  cursor: pointer;
+  overflow: hidden;
+}
+.tile:hover { background: #1a2140; }
+.tile svg { display: block; width: 100%; height: 100%; transition: transform 0.14s ease; }
+.wire { fill: none; stroke: #48527f; stroke-width: 14; stroke-linecap: butt; }
+.joint { fill: #48527f; }
+.node { fill: #12172e; stroke: #48527f; stroke-width: 9; }
+.tile.lit .wire { stroke: var(--accent); }
+.tile.lit .joint { fill: var(--accent); }
+.tile.lit .node { fill: #123a35; stroke: var(--accent); }
+.tile .core, .tile.lit .core { fill: #ffe27a; stroke: #ffe27a; }

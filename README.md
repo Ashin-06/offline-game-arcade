@@ -1,68 +1,62 @@
-# Offline Game Arcade 🎮
+# Offline Game Arcade
 
-An offline-first browser extension that automatically redirects you to a hub of classic, playable games when your internet connection is down. Inspired by Chrome's Dino game, but with much more variety!
+A Chrome and Edge extension with thirteen games. When a page fails because the connection is down, the tab opens the game hub, with a link back to the page once the connection returns. The toolbar button opens the hub at any time.
 
+Plain HTML, CSS and JavaScript: no libraries, no build step, no assets to download.
 
+## Games
 
-## Features
+| Action | Puzzle and board |
+| --- | --- |
+| Snake | Sudoku (unique solutions, three levels, notes, hints) |
+| Flipline (one-button gravity runner) | Relay (wire a generated grid back to its core) |
+| Beacon Climb (five-stage platformer) | Reversi (three CPU levels or two players) |
+| Tetris | Minesweeper (safe first click, custom boards) |
+| Space Invaders | Memory Match |
+| Breakout | 2048 |
+| Pong | |
 
-* **Automatic Offline Detection:** No need to do anything. If you try to visit a website while offline, you'll be taken to the game hub.
-* **Variety of Games:** A collection of nine classic, self-contained games to pass the time.
-* **Customizable Games:** Many games include options for speed, difficulty, or custom setups.
-* **Lightweight and Fun:** Built with pure HTML, CSS, and JavaScript. No external libraries needed.
+Every game has keyboard and touch controls, saved best scores and a sound toggle. Timed and action games can be paused.
 
----
+## Install
 
-## Games Included
+1. Open `chrome://extensions` or `edge://extensions` and turn on Developer mode.
+2. Choose Load unpacked and select this folder.
 
-This arcade features 9 classic games:
+Mobile Chrome does not load extensions. To play on a phone, serve the folder from any static host and open `offline.html`:
 
-1.  **Snake** 🐍
-2.  **Pong** 🏓
-3.  **Tetris** 🧱
-4.  **Space Invaders** 👾
-5.  **Platformer** 🏃‍♂️
-6.  **Breakout** 💥
-7.  **Minesweeper** 💣
-8.  **Memory Match** 🧠
-9.  **2048** 🔢
-
----
-
-## How to Install and Run
-
-Since this is an unpacked extension, you can load it directly into your browser for testing and development.
-
-1.  **Download or Clone:** Download this repository's code to your local machine.
-2.  **Open Chrome/Edge:** Navigate to the extensions page by typing `chrome://extensions` or `edge://extensions` in your address bar.
-3.  **Enable Developer Mode:** Find the "Developer mode" toggle in the top-right corner and turn it on.
-4.  **Load the Extension:**
-    * Click the **"Load unpacked"** button.
-    * In the file selection window, navigate to and select the main `offline-games-extension` folder (the one containing `manifest.json`).
-5.  **Test It:** Turn off your internet connection and try to visit any website. You should be redirected to the game hub!
-
----
-
-## Folder Structure
-
-The project is organized with each game in its own self-contained folder.
-
-```
-offline-games-extension/
-├── manifest.json         # The core extension file
-├── background.js         # Handles offline detection
-├── offline.html          # The main game hub page
-├── offline.css           # Styles for the game hub
-├── icons/                # Extension icons
-└── games/                # Contains all game folders
-    ├── snake/
-    ├── pong/
-    ├── tetris/
-    └── ...and so on
+```bash
+python -m http.server 8000
 ```
 
----
+## Network use
+
+The games make no requests. The extension asks only for the `webNavigation` permission.
+
+Some failures, such as a DNS error, also happen while online. For those, `background.js` sends one empty request to `https://www.gstatic.com/generate_204` to tell a dropped connection from a mistyped address or a broken site. The tab only moves to the hub if that request fails too.
+
+## Checks
+
+```bash
+node --test
+```
+
+Requires Node 20 or later and takes about 30 seconds. The checks cover the rules of each game, prove every Beacon Climb stage and every Flipline run can be finished, and run `background.js` against stand-ins for the browser APIs.
+
+## Layout
+
+```
+background.js      offline detection
+offline.html       game hub
+shared/            page shell: header, overlays, controls, scores, sound, frame loop
+games/<name>/      <name>.logic.js holds the rules, <name>.js the page
+tests/             node --test checks
+```
+
+## Trademarks
+
+Tetris, Space Invaders, Pong and Breakout are trademarks of their owners. This project is not affiliated with them.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE.txt](LICENSE.txt).

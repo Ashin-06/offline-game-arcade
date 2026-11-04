@@ -1,153 +1,84 @@
-const canvas = document.getElementById('pongCanvas');
-const ctx = canvas.getContext('2d');
+const { W, H, PADDLE_H, PADDLE_W, INSET, R } = PongLogic;
+const canvas = document.getElementById('court');
+const ctx = Arcade.hidpi(canvas, W, H);
+let state = PongLogic.create();
 
-// Get references to all the new UI elements
-const winningScoreInput = document.getElementById('winningScoreInput');
-const speedSlider = document.getElementById('speedSlider');
-const speedValueSpan = document.getElementById('speedValue');
-const restartButton = document.getElementById('restartButton');
-
-// Game Constants
-const paddleHeight = 100;
-const paddleWidth = 10;
-const PADDLE_SPEED = 8;
-const ballRadius = 10;
-
-// --- FIX: Initialize all game state variables with default values ---
-let leftPaddleY = canvas.height / 2 - paddleHeight / 2;
-let rightPaddleY = canvas.height / 2 - paddleHeight / 2;
-let ballX = canvas.width / 2;
-let ballY = canvas.height / 2;
-let ballSpeedX = 0; // Ball starts stationary
-let ballSpeedY = 0;
-let playerScore = 0;
-let computerScore = 0;
-let gameMessage = "Click to Start"; // Initial message
-let isPaused = true;
-
-function updateBallSpeed() {
-    speedValueSpan.textContent = speedSlider.value;
-}
-
-function serveBall(direction) {
-    isPaused = true;
-    ballX = canvas.width / 2;
-    ballY = canvas.height / 2;
-    gameMessage = "Get Ready...";
-
-    // Wait 1 second before launching the ball
-    setTimeout(() => {
-        const speed = parseInt(speedSlider.value);
-        ballSpeedX = speed * direction;
-        ballSpeedY = speed * (Math.random() > 0.5 ? 1 : -1);
-        isPaused = false;
-        gameMessage = "";
-    }, 1000);
-}
-
-function checkWinCondition() {
-    const targetScore = parseInt(winningScoreInput.value);
-    if (!isPaused && playerScore >= targetScore) {
-        gameMessage = "You Win!";
-        isPaused = true;
-    } else if (!isPaused && computerScore >= targetScore) {
-        gameMessage = "Computer Wins!";
-        isPaused = true;
-    } else {
-        serveBall(ballSpeedX > 0 ? -1 : 1);
-    }
-}
-
-function restartGame() {
-    playerScore = 0;
-    computerScore = 0;
-    updateScoreDisplay(); // FIX: Update score display on restart
-    serveBall(1);
-}
-
-function updateScoreDisplay() {
-    // This logic is now part of the drawing section to always be up-to-date
-}
-
-function gameLoop() {
-    // --- Update Logic ---
-    if (!isPaused) {
-        ballX += ballSpeedX;
-        ballY += ballSpeedY;
-
-        if (ballY > rightPaddleY + paddleHeight / 2) rightPaddleY += PADDLE_SPEED / 1.5;
-        if (ballY < rightPaddleY + paddleHeight / 2) rightPaddleY -= PADDLE_SPEED / 1.5;
-
-        if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
-            ballSpeedY *= -1;
-        }
-
-        if (ballX - ballRadius < paddleWidth && ballY > leftPaddleY && ballY < leftPaddleY + paddleHeight) {
-            ballSpeedX *= -1;
-        } else if (ballX + ballRadius > canvas.width - paddleWidth && ballY > rightPaddleY && ballY < rightPaddleY + paddleHeight) {
-            ballSpeedX *= -1;
-        }
-
-        if (ballX < 0) {
-            computerScore++;
-            checkWinCondition();
-        } else if (ballX > canvas.width) {
-            playerScore++;
-            checkWinCondition();
-        }
-    }
-
-    // --- Drawing Logic (This now runs every frame, even when paused) ---
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-    // Paddles
-    ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
-    ctx.fillRect(canvas.width - paddleWidth, rightPaddleY, paddleWidth, paddleHeight);
-    // Ball
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-    ctx.fill();
-    // Scores
-    ctx.font = '40px sans-serif';
-    ctx.fillText(playerScore, canvas.width / 4, 50);
-    ctx.fillText(computerScore, 3 * canvas.width / 4, 50);
-    // Center line
-    ctx.strokeStyle = '#555';
-    ctx.setLineDash([10, 15]);
-    ctx.beginPath();
-    ctx.moveTo(canvas.width / 2, 0);
-    ctx.lineTo(canvas.width / 2, canvas.height);
-    ctx.stroke();
-
-    if (gameMessage) {
-        ctx.font = '50px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(gameMessage, canvas.width / 2, canvas.height / 2 - 50);
-        ctx.textAlign = 'start';
-    }
-
-    requestAnimationFrame(gameLoop);
-}
-
-// --- Event Listeners ---
-canvas.addEventListener('mousemove', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const mouseY = e.clientY - rect.top;
-    leftPaddleY = mouseY - paddleHeight / 2;
-    if (leftPaddleY < 0) leftPaddleY = 0;
-    if (leftPaddleY + paddleHeight > canvas.height) leftPaddleY = canvas.height - paddleHeight;
+const shell = Arcade.game({
+  id: 'pong',
+  title: 'Pong',
+  scoreLabel: 'You',
+  stats: ['CPU'],
+  how: 'First to the target wins. Move your paddle with the <kbd>mouse</kbd>, a finger, <kbd>W</kbd>/<kbd>S</kbd> or <kbd>Up</kbd>/<kbd>Down</kbd>. Where the ball hits the paddle sets its angle.',
+  options: [
+    { id: 'target', label: 'Play to', default: '7', choices: [['3', '3'], ['7', '7'], ['11', '11']] },
+    { id: 'speed', label: 'Ball speed', default: 'normal', choices: [['slow', 'Slow'], ['normal', 'Normal'], ['fast', 'Fast']] },
+  ],
+  keys: ['ArrowUp', 'ArrowDown', 'w', 's'],
+  noBest: true,
+  onStart(opts) {
+    state = PongLogic.create({ target: Number(opts.target), speed: opts.speed });
+    shell.stat('CPU', 0);
+  },
 });
 
-canvas.addEventListener('click', () => {
-    // FIX: Only start the game if it's in the initial "Click to Start" state
-    if (gameMessage === "Click to Start") {
-        restartGame();
-    }
+canvas.addEventListener('pointermove', (e) => {
+  if (!shell.playing) return;
+  state.left = PongLogic.clampPaddle(Arcade.pointerPos(canvas, e, W, H).y - PADDLE_H / 2);
 });
 
-speedSlider.addEventListener('input', updateBallSpeed);
-restartButton.addEventListener('click', restartGame);
+function step(dt) {
+  const up = shell.keys.has('ArrowUp') || shell.keys.has('w');
+  const down = shell.keys.has('ArrowDown') || shell.keys.has('s');
+  const event = PongLogic.step(state, dt, (down ? 1 : 0) - (up ? 1 : 0));
+  if (event === 'bounce') shell.sound('bounce');
+  if (event === 'hit') shell.sound('hit');
+  if (event !== 'point') return;
+  shell.score(state.score.left);
+  shell.stat('CPU', state.score.right);
+  shell.say(`${state.score.left} to ${state.score.right}`);
+  if (state.winner === 'left') {
+    const wins = Arcade.store.get('pong:wins', 0) + 1;
+    Arcade.store.set('pong:wins', wins);
+    shell.hub(`${wins} ${wins === 1 ? 'win' : 'wins'}`);
+    shell.over({ title: 'You win', text: `${state.score.left} to ${state.score.right}.`, win: true });
+  } else if (state.winner === 'right') {
+    shell.over({ title: 'CPU wins', text: `${state.score.left} to ${state.score.right}.` });
+  } else {
+    shell.sound('coin');
+  }
+}
 
-// --- Initialize Game ---
-updateBallSpeed();
-gameLoop(); // FIX: Just start the game loop. The game is paused by default.
+function render() {
+  ctx.fillStyle = '#080b18';
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#2f3963';
+  for (let y = 12; y < H; y += 34) ctx.fillRect(W / 2 - 2, y, 4, 18);
+
+  ctx.font = '700 64px ui-monospace, Consolas, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#2f3963';
+  ctx.fillText(state.score.left, W / 4, 84);
+  ctx.fillText(state.score.right, (3 * W) / 4, 84);
+
+  ctx.fillStyle = '#6be3c3';
+  ctx.beginPath();
+  ctx.roundRect(INSET, state.left, PADDLE_W, PADDLE_H, 5);
+  ctx.fill();
+  ctx.fillStyle = '#ffb86b';
+  ctx.beginPath();
+  ctx.roundRect(W - INSET - PADDLE_W, state.right, PADDLE_W, PADDLE_H, 5);
+  ctx.fill();
+
+  ctx.fillStyle = '#eef1fb';
+  ctx.beginPath();
+  ctx.arc(state.ball.x, state.ball.y, R, 0, Math.PI * 2);
+  ctx.fill();
+
+  if (state.serveIn > 0 && shell.playing) {
+    ctx.font = '600 26px system-ui, sans-serif';
+    ctx.fillStyle = '#a3acd0';
+    ctx.fillText('Get ready', W / 2, H / 2 - 40);
+  }
+}
+
+Arcade.loop({ running: () => shell.playing, step, render });

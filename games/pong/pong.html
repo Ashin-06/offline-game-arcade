@@ -1,28 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Play Pong</title>
-    <link rel="stylesheet" href="pong.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pong - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
 </head>
-<body>
-    <canvas id="pongCanvas" width="1000" height="600"></canvas>
-    
-    <div class="controls">
-        <div class="control-group">
-            <label for="winningScoreInput">Winning Score:</label>
-            <input type="number" id="winningScoreInput" value="10" min="1">
-        </div>
-
-        <div class="control-group">
-            <label for="speedSlider">Ball Speed:</label>
-            <input type="range" id="speedSlider" min="1" max="10" value="5">
-            <span id="speedValue">5</span>
-        </div>
-
-        <button id="restartButton">Restart Game</button>
-    </div>
-
-    <script src="pong.js"></script>
+<body class="game" style="--accent: #ffb86b">
+  <main class="stage">
+    <canvas id="court" width="1000" height="600" role="img" aria-label="Paddle court with your paddle on the left"></canvas>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="pong.logic.js"></script>
+  <script src="pong.js"></script>
 </body>
 </html>

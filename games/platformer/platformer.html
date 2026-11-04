@@ -1,12 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Play Platformer</title>
-    <link rel="stylesheet" href="platformer.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Beacon Climb - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
 </head>
-<body>
-    <canvas id="platformerCanvas" width="800" height="600"></canvas>
-    <script src="platformer.js"></script>
+<body class="game" style="--accent: #ffe27a">
+  <main class="stage">
+    <canvas id="world" width="800" height="480" role="img" aria-label="Side-on view of the level"></canvas>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="platformer.logic.js"></script>
+  <script src="platformer.js"></script>
 </body>
 </html>

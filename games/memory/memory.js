@@ -1,107 +1,74 @@
-const gameContainer = document.querySelector('.memory-game');
-const movesCountSpan = document.getElementById('moves-count');
-const scoreCountSpan = document.getElementById('score-count');
-const newGameButton = document.getElementById('newGameButton');
-const pairsInput = document.getElementById('pairsInput');
-const matchCountInput = document.getElementById('matchCountInput');
+const boardEl = document.getElementById('board');
+const FACE_NAMES = { '🐶': 'dog', '🐱': 'cat', '🐭': 'mouse', '🐹': 'hamster', '🐰': 'rabbit', '🦊': 'fox', '🐻': 'bear', '🐼': 'panda', '🐨': 'koala', '🐯': 'tiger', '🦁': 'lion', '🐮': 'cow' };
+let state = MemoryLogic.create();
+let settleTimer = 0;
 
-const EMOJI_POOL = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵'];
+const shell = Arcade.game({
+  id: 'memory',
+  title: 'Memory Match',
+  scoreLabel: 'Moves',
+  lowerIsBetter: true,
+  pausable: false,
+  how: 'Find every matching set in as few moves as you can. Click or tap, or <kbd>Tab</kbd> to a card and press <kbd>Enter</kbd>.',
+  options: [
+    { id: 'items', label: 'Different animals', default: '8', choices: [['6', '6'], ['8', '8'], ['12', '12']] },
+    { id: 'group', label: 'Match size', default: '2', choices: [['2', 'Pairs'], ['3', 'Threes'], ['4', 'Fours']] },
+  ],
+  bestKey: (o) => `${o.items}x${o.group}`,
+  bestLabel: (o) => `${o.items} × ${o.group}`,
+  onStart(opts) {
+    // The timer belongs to the previous board: left running, it would touch the new one.
+    clearTimeout(settleTimer);
+    state = MemoryLogic.create({ items: Number(opts.items), group: Number(opts.group) });
+    build();
+  },
+});
 
-let flippedCards = [];
-let matchedPairs = 0;
-let moves = 0;
-let score = 0;
-let lockBoard = false;
-let uniqueItems, matchCount, totalCards;
-
-function initializeGame() {
-    // Read settings
-    uniqueItems = parseInt(pairsInput.value);
-    matchCount = parseInt(matchCountInput.value);
-    totalCards = uniqueItems * matchCount;
-
-    // Reset game state
-    moves = 0;
-    score = 0;
-    matchedPairs = 0;
-    movesCountSpan.textContent = moves;
-    scoreCountSpan.textContent = score;
-    gameContainer.innerHTML = '';
-    
-    // Create the array of cards
-    const selectedEmojis = EMOJI_POOL.slice(0, uniqueItems);
-    let cardsArray = [];
-    for (let i = 0; i < matchCount; i++) {
-        cardsArray.push(...selectedEmojis);
-    }
-    cardsArray.sort(() => Math.random() - 0.5);
-
-    // Set up grid layout
-    const columns = Math.ceil(Math.sqrt(totalCards));
-    gameContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-
-    // Create card elements
-    cardsArray.forEach(emoji => {
-        const card = document.createElement('div');
-        card.classList.add('memory-card');
-        card.dataset.emoji = emoji;
-        card.innerHTML = `
-            <div class="front-face"></div>
-            <div class="back-face">${emoji}</div>
-        `;
-        gameContainer.appendChild(card);
-        card.addEventListener('click', flipCard);
-    });
+function faceLabel(card) {
+  if (card.done) return `${FACE_NAMES[card.face]}, matched`;
+  return card.up ? FACE_NAMES[card.face] : 'Hidden card';
 }
 
-function flipCard() {
-    if (lockBoard || this.classList.contains('flip')) return;
-
-    this.classList.add('flip');
-    flippedCards.push(this);
-
-    if (flippedCards.length === matchCount) {
-        moves++;
-        movesCountSpan.textContent = moves;
-        checkForMatch();
-    }
+function build() {
+  const count = state.cards.length;
+  const columns = Math.ceil(Math.sqrt(count));
+  boardEl.style.setProperty('--cols', columns);
+  boardEl.style.setProperty('--rows', Math.ceil(count / columns));
+  boardEl.replaceChildren(...state.cards.map((card, i) => {
+    const button = Arcade.el('button', { type: 'button', className: 'card' }, [
+      Arcade.el('span', { className: 'face back' }),
+      Arcade.el('span', { className: 'face front', textContent: card.face }),
+    ]);
+    button.setAttribute('aria-label', 'Hidden card');
+    button.addEventListener('click', () => choose(i));
+    return button;
+  }));
 }
 
-function checkForMatch() {
-    lockBoard = true;
-    const firstCardEmoji = flippedCards[0].dataset.emoji;
-    const isMatch = flippedCards.every(card => card.dataset.emoji === firstCardEmoji);
-
-    if (isMatch) {
-        score += 10 * matchCount; // More points for bigger matches
-        scoreCountSpan.textContent = score;
-        disableCards();
-    } else {
-        unflipCards();
-    }
+function paint() {
+  state.cards.forEach((card, i) => {
+    const button = boardEl.children[i];
+    button.classList.toggle('up', card.up || card.done);
+    button.classList.toggle('done', card.done);
+    button.setAttribute('aria-label', faceLabel(card));
+  });
 }
 
-function disableCards() {
-    flippedCards.forEach(card => card.removeEventListener('click', flipCard));
-    matchedPairs++;
-    resetBoard();
-    if (matchedPairs === uniqueItems) {
-        setTimeout(() => alert(`You won in ${moves} moves! Final Score: ${score}`), 500);
-    }
+function choose(index) {
+  if (!shell.playing) return;
+  const result = MemoryLogic.flip(state, index);
+  if (result === 'ignored') return;
+  paint();
+  shell.score(state.moves);
+  shell.sound(result === 'flipped' ? 'tap' : result === 'miss' ? 'lock' : 'coin');
+  if (result === 'miss') {
+    settleTimer = setTimeout(() => {
+      MemoryLogic.settle(state);
+      paint();
+    }, 900);
+  }
+  if (result === 'win') {
+    const best = shell.record(state.moves);
+    shell.over({ title: 'All matched', text: `${state.moves} moves${best ? ', your best yet' : ''}.`, win: true });
+  }
 }
-
-function unflipCards() {
-    setTimeout(() => {
-        flippedCards.forEach(card => card.classList.remove('flip'));
-        resetBoard();
-    }, 1200);
-}
-
-function resetBoard() {
-    [flippedCards, lockBoard] = [[], false];
-}
-
-newGameButton.addEventListener('click', initializeGame);
-
-// Initial Game Start
-initializeGame();

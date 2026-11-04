@@ -1,59 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Offline Game Arcade</title>
-    <link rel="stylesheet" href="offline.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Offline Game Arcade</title>
+  <link rel="icon" href="icons/icon48.png">
+  <link rel="stylesheet" href="shared/arcade.css">
+  <link rel="stylesheet" href="offline.css">
 </head>
 <body>
-    <h1>You're Offline!</h1>
-    <p>But the fun doesn't have to stop. Pick a game to play.</p>
-
-    <div class="game-grid">
-        <a href="./games/snake/snake.html" class="game-card">
-            <div class="icon">🐍</div>
-            <h2>Snake</h2>
-        </a>
-
-        <a href="./games/pong/pong.html" class="game-card">
-            <div class="icon">🏓</div>
-            <h2>Pong</h2>
-        </a>
-
-        <a href="./games/tetris/tetris.html" class="game-card">
-            <div class="icon">🧱</div>
-            <h2>Tetris</h2>
-        </a>
-
-        <a href="./games/spaceinvaders/spaceinvaders.html" class="game-card">
-            <div class="icon">👾</div>
-            <h2>Invaders</h2>
-        </a>
-
-        <a href="./games/platformer/platformer.html" class="game-card">
-            <div class="icon">🏃‍♂️</div>
-            <h2>Platformer</h2>
-        </a>
-        
-        <a href="./games/breakout/breakout.html" class="game-card">
-            <div class="icon">💥</div>
-            <h2>Breakout</h2>
-        </a>
-
-        <a href="./games/minesweeper/minesweeper.html" class="game-card">
-            <div class="icon">💣</div>
-            <h2>Minesweeper</h2>
-        </a>
-
-        <a href="./games/memory/memory.html" class="game-card">
-            <div class="icon">🧠</div>
-            <h2>Memory Match</h2>
-        </a>
-        
-        <a href="./games/2048/2048.html" class="game-card">
-            <div class="icon">🔢</div>
-            <h2>2048</h2>
-        </a>
-    </div>
+  <main class="hub">
+    <header>
+      <h1 id="headline">Offline Game Arcade</h1>
+      <p id="subline">Thirteen games that need no connection.</p>
+      <p id="return" class="return" hidden></p>
+    </header>
+    <h2>Action</h2>
+    <nav class="grid" aria-label="Action games">
+      <a class="card" href="games/snake/snake.html" style="--accent: #6be3c3" data-game="snake">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30h18a5 5 0 0 0 0-10H14a5 5 0 0 1 0-10h18" class="s"/><circle cx="33" cy="10" r="2.5" class="f"/></svg>
+        <span class="card-text"><strong>Snake</strong><small>Grow without biting yourself</small><em></em></span>
+      </a>
+      <a class="card" href="games/flipline/flipline.html" style="--accent: #6be3c3" data-game="flipline">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 8h32M4 32h32" class="s"/><path d="M12 28c5-14 9-16 15-16" class="s l"/><rect x="26" y="10" width="7" height="7" rx="2" class="f"/></svg>
+        <span class="card-text"><strong>Flipline</strong><small>Flip gravity, one button</small><em></em></span>
+      </a>
+      <a class="card" href="games/platformer/platformer.html" style="--accent: #ffe27a" data-game="platformer">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 33h12M23 23h12" class="s"/><path d="M29 18V8" class="s l"/><circle cx="29" cy="8" r="3.5" class="f"/><rect x="9" y="22" width="7" height="9" rx="2" class="f"/></svg>
+        <span class="card-text"><strong>Beacon Climb</strong><small>Five stages of ledges and spikes</small><em></em></span>
+      </a>
+      <a class="card" href="games/tetris/tetris.html" style="--accent: #c6a3ff" data-game="tetris">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 8h8v8h8v8h-8v8H8zM26 8h8v16h-8z" class="s l"/></svg>
+        <span class="card-text"><strong>Tetris</strong><small>Stack and clear rows</small><em></em></span>
+      </a>
+      <a class="card" href="games/spaceinvaders/spaceinvaders.html" style="--accent: #7cc4ff" data-game="invaders">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="9" y="8" width="22" height="13" rx="5" class="s l"/><path d="M15 14h2M23 14h2" class="s"/><path d="M20 28l7 6H13z" class="f"/></svg>
+        <span class="card-text"><strong>Space Invaders</strong><small>Stop the formation landing</small><em></em></span>
+      </a>
+      <a class="card" href="games/breakout/breakout.html" style="--accent: #ffe27a" data-game="breakout">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 8h7v5H7zM17 8h7v5h-7zM27 8h7v5h-7zM7 16h7v5H7zM27 16h7v5h-7z" class="f"/><path d="M12 34h16" class="s"/><circle cx="21" cy="26" r="2.5" class="f"/></svg>
+        <span class="card-text"><strong>Breakout</strong><small>Clear the wall of bricks</small><em></em></span>
+      </a>
+      <a class="card" href="games/pong/pong.html" style="--accent: #ffb86b" data-game="pong">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 12v16M34 12v16" class="s"/><circle cx="21" cy="17" r="3" class="f"/></svg>
+        <span class="card-text"><strong>Pong</strong><small>Beat the CPU paddle</small><em></em></span>
+      </a>
+    </nav>
+    <h2>Puzzle and board</h2>
+    <nav class="grid" aria-label="Puzzle and board games">
+      <a class="card" href="games/sudoku/sudoku.html" style="--accent: #7cc4ff" data-game="sudoku">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="27" height="27" rx="3" class="s l"/><path d="M16 7v27M25 7v27M7 16h27M7 25h27" class="s l"/><rect x="17" y="17" width="7" height="7" class="f"/></svg>
+        <span class="card-text"><strong>Sudoku</strong><small>Three levels, unique solutions</small><em></em></span>
+      </a>
+      <a class="card" href="games/relay/relay.html" style="--accent: #6be3c3" data-game="relay">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34V6M6 20h28" class="s"/><rect x="14" y="14" width="12" height="12" rx="3" class="f"/><circle cx="34" cy="20" r="2.5" class="f"/><circle cx="6" cy="20" r="2.5" class="f"/></svg>
+        <span class="card-text"><strong>Relay</strong><small>Wire the grid to the core</small><em></em></span>
+      </a>
+      <a class="card" href="games/reversi/reversi.html" style="--accent: #7ce38b" data-game="reversi">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="13" r="7" class="f"/><circle cx="28" cy="13" r="7" class="s l"/><circle cx="13" cy="28" r="7" class="s l"/><circle cx="28" cy="28" r="7" class="f"/></svg>
+        <span class="card-text"><strong>Reversi</strong><small>Outflank the CPU or a friend</small><em></em></span>
+      </a>
+      <a class="card" href="games/minesweeper/minesweeper.html" style="--accent: #ffb86b" data-game="minesweeper">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="8" class="f"/><path d="M20 6v5M20 29v5M6 20h5M29 20h5M10 10l4 4M26 26l4 4M30 10l-4 4M14 26l-4 4" class="s"/></svg>
+        <span class="card-text"><strong>Minesweeper</strong><small>First click is always safe</small><em></em></span>
+      </a>
+      <a class="card" href="games/memory/memory.html" style="--accent: #ff9eae" data-game="memory">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="10" width="13" height="20" rx="3" class="s l"/><rect x="22" y="10" width="13" height="20" rx="3" class="f"/></svg>
+        <span class="card-text"><strong>Memory Match</strong><small>Pairs, threes or fours</small><em></em></span>
+      </a>
+      <a class="card" href="games/2048/2048.html" style="--accent: #e8953f" data-game="2048">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="12" height="12" rx="3" class="f"/><rect x="22" y="7" width="12" height="12" rx="3" class="s l"/><rect x="7" y="22" width="12" height="12" rx="3" class="s l"/><rect x="22" y="22" width="12" height="12" rx="3" class="f"/></svg>
+        <span class="card-text"><strong>2048</strong><small>Merge your way up</small><em></em></span>
+      </a>
+    </nav>
+  </main>
+  <script src="offline.js"></script>
 </body>
 </html>

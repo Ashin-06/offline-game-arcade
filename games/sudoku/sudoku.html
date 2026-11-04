@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sudoku - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
+  <link rel="stylesheet" href="sudoku.css">
+</head>
+<body class="game" style="--accent: #7cc4ff">
+  <main class="stage">
+    <div class="sudoku">
+      <div id="board" role="group" aria-label="Sudoku grid"></div>
+      <div class="side">
+        <div id="numbers" role="group" aria-label="Digits"></div>
+        <div class="tools-row">
+          <button type="button" id="notes" aria-pressed="false">Notes</button>
+          <button type="button" id="erase">Erase</button>
+          <button type="button" id="undo">Undo</button>
+          <button type="button" id="hint">Hint</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="sudoku.logic.js"></script>
+  <script src="sudoku.js"></script>
+</body>
+</html>

@@ -1,33 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Play Minesweeper</title>
-    <link rel="stylesheet" href="minesweeper.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Minesweeper - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
+  <link rel="stylesheet" href="minesweeper.css">
 </head>
-<body>
-    <h1>Minesweeper</h1>
-
-    <!-- NEW: Settings panel for custom games -->
-    <div class="settings">
-        <div class="setting-item">
-            <label for="rowsInput">Rows:</label>
-            <input type="number" id="rowsInput" value="16" min="8" max="30">
-        </div>
-        <div class="setting-item">
-            <label for="colsInput">Columns:</label>
-            <input type="number" id="colsInput" value="16" min="8" max="40">
-        </div>
-        <div class="setting-item">
-            <label for="minesInput">Mines:</label>
-            <input type="number" id="minesInput" value="40" min="10">
-        </div>
-        <button id="newGameButton">New Game</button>
+<body class="game" style="--accent: #ffb86b">
+  <main class="stage">
+    <div class="sweep">
+      <div class="board-scroll"><div id="board" role="group" aria-label="Minefield"></div></div>
+      <button type="button" id="flagMode" aria-pressed="false">⚑ Flag mode</button>
     </div>
-
-    <div id="board"></div>
-    <div id="result-message" class="hidden"></div>
-
-    <script src="minesweeper.js"></script>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="minesweeper.logic.js"></script>
+  <script src="minesweeper.js"></script>
 </body>
 </html>

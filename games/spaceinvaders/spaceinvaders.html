@@ -1,20 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Play Space Invaders</title>
-    <link rel="stylesheet" href="spaceinvaders.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Space Invaders - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
 </head>
-<body>
-    <canvas id="invadersCanvas" width="800" height="600"></canvas>
-    <div class="controls">
-        <div class="control-group">
-            <label for="speedSlider">Invader Speed:</label>
-            <input type="range" id="speedSlider" min="1" max="10" value="3">
-            <span id="speedValue">3</span>
-        </div>
-        <button id="restartButton">Restart Game</button>
-    </div>
-    <script src="spaceinvaders.js"></script>
+<body class="game" style="--accent: #7cc4ff">
+  <main class="stage">
+    <canvas id="field" width="800" height="600" role="img" aria-label="Formation of aliens above your ship"></canvas>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="spaceinvaders.logic.js"></script>
+  <script src="spaceinvaders.js"></script>
 </body>
 </html>
