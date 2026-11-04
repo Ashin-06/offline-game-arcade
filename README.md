@@ -12,10 +12,10 @@ Plain HTML, CSS and JavaScript: no libraries, no build step, no assets to downlo
 | Lane Rush (three-lane runner) | Ludo (2 to 4 players, CPU or pass and play) | Grid Fit (fit pieces, clear rows and columns) |
 | Flipline (one-button gravity runner) | Pool (eight-ball, CPU or two players) | Sudoku (unique solutions, notes, hints) |
 | Beacon Climb (five-stage platformer) | Reversi (three CPU levels or two players) | Relay (wire a generated grid back to its core) |
-| Tetris | Sentry Path (tower defence, three maps) | Minesweeper (safe first click, custom boards) |
-| Space Invaders | | Memory Match |
-| Breakout | | 2048 |
-| Pong | | |
+| Stack Drop | Sentry Path (tower defence, three maps) | Minesweeper (safe first click, custom boards) |
+| Nova Siege | | Memory Match |
+| Brick Buster | | 2048 |
+| Paddle Duel | | |
 
 Every game has keyboard and touch controls and a sound toggle, and action and timed games can be paused.
 
@@ -29,6 +29,8 @@ Mobile Chrome does not load extensions. To play on a phone, serve the folder fro
 ```bash
 python -m http.server 8000
 ```
+
+To publish it for everyone, see [docs/chrome-web-store.md](docs/chrome-web-store.md).
 
 ## Network use
 
@@ -53,10 +55,6 @@ shared/            page shell: header, overlays, controls, scores, sound, frame 
 games/<name>/      <name>.logic.js holds the rules, <name>.js the page
 tests/             node --test checks
 ```
-
-## Trademarks
-
-Tetris, Space Invaders, Pong and Breakout are trademarks of their owners. This project is not affiliated with them.
 
 ## License
 

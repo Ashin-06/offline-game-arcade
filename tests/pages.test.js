@@ -35,6 +35,12 @@ test('game code reaches for no network', () => {
   }
 });
 
+test('no game uses a trademarked title', () => {
+  const taken = /\b(tetris|space invaders|pong|breakout|candy crush|subway surfers|block blast)\b/i;
+  const files = ['offline.html', 'manifest.json', 'README.md', ...pages];
+  for (const file of files) assert.ok(!taken.test(read(file)), `${file} names a trademarked game`);
+});
+
 test('the hub links every game', () => {
   const hub = read('offline.html');
   for (const game of games) assert.ok(hub.includes(`games/${game}/${game}.html`), `hub lists ${game}`);

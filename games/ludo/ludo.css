@@ -43,7 +43,7 @@
   background: #f8f9ff;
   cursor: pointer;
 }
-#die:disabled { opacity: 0.6; cursor: default; }
+#die:disabled { opacity: 0.82; cursor: default; }
 #die i { display: block; border-radius: 50%; }
 #die i.pip { background: #12162c; }
 #status { color: var(--muted); font-size: 0.95rem; }

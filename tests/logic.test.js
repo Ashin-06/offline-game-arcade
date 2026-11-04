@@ -3,10 +3,10 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const Snake = require('../games/snake/snake.logic.js');
-const Pong = require('../games/pong/pong.logic.js');
-const Breakout = require('../games/breakout/breakout.logic.js');
-const Invaders = require('../games/spaceinvaders/spaceinvaders.logic.js');
-const Blocks = require('../games/tetris/tetris.logic.js');
+const Duel = require('../games/paddleduel/paddleduel.logic.js');
+const Bricks = require('../games/brickbuster/brickbuster.logic.js');
+const Siege = require('../games/novasiege/novasiege.logic.js');
+const Blocks = require('../games/stackdrop/stackdrop.logic.js');
 const Merge = require('../games/2048/2048.logic.js');
 const Memory = require('../games/memory/memory.logic.js');
 const Mines = require('../games/minesweeper/minesweeper.logic.js');
@@ -86,17 +86,17 @@ test('snake: food never lands on the snake', () => {
   }
 });
 
-test('pong: the CPU can be beaten, the ball cannot pass through a paddle', () => {
+test('paddle duel: the CPU can be beaten, the ball cannot pass through a paddle', () => {
   let playerWins = 0;
   let cpuWins = 0;
   for (let seed = 1; seed <= 12; seed++) {
-    const s = Pong.create({ target: 5, speed: 'normal', rng: seeded(seed) });
+    const s = Duel.create({ target: 5, speed: 'normal', rng: seeded(seed) });
     for (let i = 0; i < 60 * 60 * 10 && !s.winner; i++) {
       // A competent player that keeps the ball on the paddle's edge, which makes steep returns.
-      s.left = Pong.clampPaddle(s.ball.y - Pong.PADDLE_H * (seed % 2 ? 0.9 : 0.1));
-      Pong.step(s, 1 / 60);
-      assert.ok(s.right >= 0 && s.right <= Pong.H - Pong.PADDLE_H, 'CPU paddle stays on the court');
-      assert.ok(s.ball.y >= 0 && s.ball.y <= Pong.H, 'ball stays between the walls');
+      s.left = Duel.clampPaddle(s.ball.y - Duel.PADDLE_H * (seed % 2 ? 0.9 : 0.1));
+      Duel.step(s, 1 / 60);
+      assert.ok(s.right >= 0 && s.right <= Duel.H - Duel.PADDLE_H, 'CPU paddle stays on the court');
+      assert.ok(s.ball.y >= 0 && s.ball.y <= Duel.H, 'ball stays between the walls');
     }
     assert.ok(s.winner, 'a match always ends');
     if (s.winner === 'left') playerWins++;
@@ -106,36 +106,36 @@ test('pong: the CPU can be beaten, the ball cannot pass through a paddle', () =>
   assert.equal(playerWins + cpuWins, 12);
 });
 
-test('pong: a player who never moves loses, exactly at the target', () => {
-  const s = Pong.create({ target: 3, rng: seeded(9) });
+test('paddle duel: a player who never moves loses, exactly at the target', () => {
+  const s = Duel.create({ target: 3, rng: seeded(9) });
   s.left = 0;
   for (let i = 0; i < 60 * 60 * 5 && !s.winner; i++) {
     s.ball.y = Math.max(s.ball.y, 200);
-    Pong.step(s, 1 / 60);
+    Duel.step(s, 1 / 60);
   }
   assert.equal(s.score.right, 3);
   assert.equal(s.winner, 'right');
 });
 
-test('breakout: clearing the wall is a win, not a game over', () => {
-  const s = Breakout.create({ rng: seeded(1) });
+test('brick buster: clearing the wall is a win, not a game over', () => {
+  const s = Bricks.create({ rng: seeded(1) });
   for (const brick of s.bricks) brick.alive = false;
   const last = s.bricks[0];
   last.alive = true;
   s.remaining = 1;
   s.held = false;
-  s.ball = { x: last.x + 20, y: last.y + Breakout.BRICK_H + 5, vx: 0, vy: -400 };
-  assert.equal(Breakout.step(s, 1 / 60), 'cleared');
+  s.ball = { x: last.x + 20, y: last.y + Bricks.BRICK_H + 5, vx: 0, vy: -400 };
+  assert.equal(Bricks.step(s, 1 / 60), 'cleared');
   assert.equal(s.won, true);
 });
 
-test('breakout: losing all lives ends the game, a lost ball waits on the paddle', () => {
-  const s = Breakout.create({ rng: seeded(2) });
+test('brick buster: losing all lives ends the game, a lost ball waits on the paddle', () => {
+  const s = Bricks.create({ rng: seeded(2) });
   for (let life = 3; life >= 1; life--) {
     s.held = false;
-    s.ball = { x: 10, y: Breakout.H + Breakout.R, vx: 0, vy: 400 };
-    s.paddle = Breakout.W - 60;
-    const event = Breakout.step(s, 1 / 60);
+    s.ball = { x: 10, y: Bricks.H + Bricks.R, vx: 0, vy: 400 };
+    s.paddle = Bricks.W - 60;
+    const event = Bricks.step(s, 1 / 60);
     assert.equal(event, life === 1 ? 'lost' : 'miss');
     assert.equal(s.held, true);
   }
@@ -143,16 +143,16 @@ test('breakout: losing all lives ends the game, a lost ball waits on the paddle'
   assert.equal(s.won, false);
 });
 
-test('breakout: the ball never skips a brick, leaves the field or flattens out', () => {
+test('brick buster: the ball never skips a brick, leaves the field or flattens out', () => {
   for (let seed = 1; seed <= 6; seed++) {
     const rng = seeded(seed);
-    const s = Breakout.create({ speed: 'fast', rng });
-    Breakout.launch(s);
+    const s = Bricks.create({ speed: 'fast', rng });
+    Bricks.launch(s);
     for (let i = 0; i < 60 * 240 && !s.over; i++) {
-      if (s.held) Breakout.launch(s);
-      Breakout.setPaddle(s, s.ball.x + (rng() - 0.5) * 60);
-      Breakout.step(s, 1 / 60);
-      assert.ok(s.ball.x >= 0 && s.ball.x <= Breakout.W);
+      if (s.held) Bricks.launch(s);
+      Bricks.setPaddle(s, s.ball.x + (rng() - 0.5) * 60);
+      Bricks.step(s, 1 / 60);
+      assert.ok(s.ball.x >= 0 && s.ball.x <= Bricks.W);
       assert.ok(s.ball.y >= 0);
       assert.equal(s.remaining, s.bricks.filter((b) => b.alive).length);
     }
@@ -160,54 +160,54 @@ test('breakout: the ball never skips a brick, leaves the field or flattens out',
   }
 });
 
-test('breakout: the paddle bounce always goes up and its angle follows where it hit', () => {
-  const s = Breakout.create({ rng: seeded(3) });
+test('brick buster: the paddle bounce always goes up and its angle follows where it hit', () => {
+  const s = Bricks.create({ rng: seeded(3) });
   s.held = false;
   s.paddle = 400;
-  s.ball = { x: 440, y: Breakout.PADDLE_Y - 12, vx: 0, vy: 300 };
-  assert.equal(Breakout.step(s, 1 / 60), 'paddle');
+  s.ball = { x: 440, y: Bricks.PADDLE_Y - 12, vx: 0, vy: 300 };
+  assert.equal(Bricks.step(s, 1 / 60), 'paddle');
   assert.ok(s.ball.vy < 0);
   assert.ok(s.ball.vx > 0);
 });
 
-test('invaders: one shot removes one alien, score and win are right', () => {
-  const s = Invaders.create({ rng: () => 0.99 });
+test('nova siege: one shot removes one alien, score and win are right', () => {
+  const s = Siege.create({ rng: () => 0.99 });
   const count = s.aliens.length;
   const target = s.aliens[0];
   s.shots.push({ x: target.x + 10, y: target.y + 5 });
-  const events = Invaders.step(s, 1 / 60);
+  const events = Siege.step(s, 1 / 60);
   assert.equal(events.filter((e) => e === 'kill').length, 1);
   assert.equal(s.aliens.length, count - 1);
   assert.equal(s.shots.length, 0);
   s.aliens = [s.aliens[0]];
   s.shots = [{ x: s.aliens[0].x + 10, y: s.aliens[0].y + 5 }];
-  assert.ok(Invaders.step(s, 1 / 60).includes('win'));
+  assert.ok(Siege.step(s, 1 / 60).includes('win'));
   assert.equal(s.won, true);
 });
 
-test('invaders: the formation stays on screen, only the lowest in a column fires, three hits end it', () => {
+test('nova siege: the formation stays on screen, only the lowest in a column fires, three hits end it', () => {
   const rng = seeded(11);
-  const s = Invaders.create({ speed: 'fast', rng });
+  const s = Siege.create({ speed: 'fast', rng });
   let bombsSeen = 0;
   for (let i = 0; i < 60 * 30 && !s.over; i++) {
     const before = s.bombs.length;
     s.invulnerable = 1;
-    Invaders.step(s, 1 / 60);
+    Siege.step(s, 1 / 60);
     if (s.bombs.length > before) {
       const bomb = s.bombs[s.bombs.length - 1];
-      const below = s.aliens.filter((a) => a.x < bomb.x && a.x + Invaders.ALIEN_W > bomb.x && a.y > bomb.y);
+      const below = s.aliens.filter((a) => a.x < bomb.x && a.x + Siege.ALIEN_W > bomb.x && a.y > bomb.y);
       assert.equal(below.length, 0, 'nothing below the alien that fired');
       bombsSeen++;
     }
-    for (const a of s.aliens) assert.ok(a.x >= 0 && a.x + Invaders.ALIEN_W <= Invaders.W);
+    for (const a of s.aliens) assert.ok(a.x >= 0 && a.x + Siege.ALIEN_W <= Siege.W);
   }
   assert.ok(bombsSeen > 5);
 
-  const hit = Invaders.create({ rng: () => 0.99 });
+  const hit = Siege.create({ rng: () => 0.99 });
   for (let i = 0; i < 3; i++) {
     hit.invulnerable = 0;
-    hit.bombs.push({ x: hit.player, y: Invaders.PLAYER_Y + 2 });
-    Invaders.step(hit, 1 / 60);
+    hit.bombs.push({ x: hit.player, y: Siege.PLAYER_Y + 2 });
+    Siege.step(hit, 1 / 60);
   }
   assert.equal(hit.lives, 0);
   assert.equal(hit.over, true);

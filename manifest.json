@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Offline Game Arcade",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Twenty games that open by themselves when your connection is down, or from the toolbar at any time.",
   "minimum_chrome_version": "108",
   "permissions": ["webNavigation"],

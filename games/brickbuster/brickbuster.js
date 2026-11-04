@@ -1,12 +1,12 @@
-const { W, H, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, PADDLE_Y, R } = BreakoutLogic;
+const { W, H, BRICK_W, BRICK_H, PADDLE_W, PADDLE_H, PADDLE_Y, R } = BrickBusterLogic;
 const canvas = document.getElementById('field');
 const ctx = Arcade.hidpi(canvas, W, H);
 const ROW_COLORS = ['#ff6b81', '#ffb86b', '#ffe27a', '#6be3c3', '#7cc4ff'];
-let state = BreakoutLogic.create();
+let state = BrickBusterLogic.create();
 
 const shell = Arcade.game({
-  id: 'breakout',
-  title: 'Breakout',
+  id: 'brickbuster',
+  title: 'Brick Buster',
   stats: ['Lives'],
   how: 'Clear every brick. Move with the <kbd>mouse</kbd>, a finger or <kbd>Left</kbd>/<kbd>Right</kbd>. Launch with <kbd>Space</kbd> or a tap. Hit the ball with the edge of the paddle to send it wide.',
   options: [
@@ -19,28 +19,28 @@ const shell = Arcade.game({
     { key: 'ArrowRight', label: '▶', name: 'Move right' },
   ],
   onStart(opts) {
-    state = BreakoutLogic.create({ speed: opts.speed });
+    state = BrickBusterLogic.create({ speed: opts.speed });
     shell.stat('Lives', state.lives);
   },
   onKey(key, down) {
-    if (down && (key === ' ' || key === 'ArrowUp')) BreakoutLogic.launch(state);
+    if (down && (key === ' ' || key === 'ArrowUp')) BrickBusterLogic.launch(state);
   },
 });
 
 function pointerToPaddle(e) {
-  BreakoutLogic.setPaddle(state, Arcade.pointerPos(canvas, e, W, H).x);
+  BrickBusterLogic.setPaddle(state, Arcade.pointerPos(canvas, e, W, H).x);
 }
 canvas.addEventListener('pointermove', (e) => { if (shell.playing) pointerToPaddle(e); });
 canvas.addEventListener('pointerdown', (e) => {
   if (!shell.playing) return;
   pointerToPaddle(e);
-  BreakoutLogic.launch(state);
+  BrickBusterLogic.launch(state);
 });
 
 function step(dt) {
   const left = shell.keys.has('ArrowLeft') || shell.keys.has('a');
   const right = shell.keys.has('ArrowRight') || shell.keys.has('d');
-  const event = BreakoutLogic.step(state, dt, (right ? 1 : 0) - (left ? 1 : 0));
+  const event = BrickBusterLogic.step(state, dt, (right ? 1 : 0) - (left ? 1 : 0));
   if (!event) return;
   if (event === 'bounce') shell.sound('bounce');
   if (event === 'paddle') shell.sound('hit');

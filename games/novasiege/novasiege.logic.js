@@ -1,5 +1,5 @@
 // Formation shooter rules on a fixed 800 x 600 field. Units are pixels and seconds.
-const InvadersLogic = (() => {
+const NovaSiegeLogic = (() => {
   const W = 800;
   const H = 600;
   const COLS = 14;
@@ -129,4 +129,4 @@ const InvadersLogic = (() => {
 
   return { W, H, ALIEN_W, ALIEN_H, PLAYER_W, PLAYER_H, PLAYER_Y, create, step };
 })();
-if (typeof module !== 'undefined') module.exports = InvadersLogic;
+if (typeof module !== 'undefined') module.exports = NovaSiegeLogic;

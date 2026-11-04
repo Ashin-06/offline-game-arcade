@@ -1,5 +1,5 @@
 // Brick wall rules on a fixed 800 x 600 field. Units are pixels and seconds.
-const BreakoutLogic = (() => {
+const BrickBusterLogic = (() => {
   const W = 800;
   const H = 600;
   const COLS = 9;
@@ -157,4 +157,4 @@ const BreakoutLogic = (() => {
     create, setPaddle, launch, step,
   };
 })();
-if (typeof module !== 'undefined') module.exports = BreakoutLogic;
+if (typeof module !== 'undefined') module.exports = BrickBusterLogic;

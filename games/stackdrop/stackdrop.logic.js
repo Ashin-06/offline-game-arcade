@@ -1,5 +1,5 @@
 // Falling block rules, free of any page code so they can be checked from Node.
-const TetrisLogic = (() => {
+const StackDropLogic = (() => {
   const ROWS = 20;
   const COLS = 12;
   const SHAPES = [
@@ -101,4 +101,4 @@ const TetrisLogic = (() => {
 
   return { ROWS, COLS, SHAPES, rotate, collides, create, level, interval, move, turn, drop, hardDrop };
 })();
-if (typeof module !== 'undefined') module.exports = TetrisLogic;
+if (typeof module !== 'undefined') module.exports = StackDropLogic;

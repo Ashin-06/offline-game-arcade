@@ -1,11 +1,11 @@
-const { W, H, PADDLE_H, PADDLE_W, INSET, R } = PongLogic;
+const { W, H, PADDLE_H, PADDLE_W, INSET, R } = PaddleDuelLogic;
 const canvas = document.getElementById('court');
 const ctx = Arcade.hidpi(canvas, W, H);
-let state = PongLogic.create();
+let state = PaddleDuelLogic.create();
 
 const shell = Arcade.game({
-  id: 'pong',
-  title: 'Pong',
+  id: 'paddleduel',
+  title: 'Paddle Duel',
   scoreLabel: 'You',
   stats: ['CPU'],
   how: 'First to the target wins. Move your paddle with the <kbd>mouse</kbd>, a finger, <kbd>W</kbd>/<kbd>S</kbd> or <kbd>Up</kbd>/<kbd>Down</kbd>. Where the ball hits the paddle sets its angle.',
@@ -16,20 +16,20 @@ const shell = Arcade.game({
   keys: ['ArrowUp', 'ArrowDown', 'w', 's'],
   noBest: true,
   onStart(opts) {
-    state = PongLogic.create({ target: Number(opts.target), speed: opts.speed });
+    state = PaddleDuelLogic.create({ target: Number(opts.target), speed: opts.speed });
     shell.stat('CPU', 0);
   },
 });
 
 canvas.addEventListener('pointermove', (e) => {
   if (!shell.playing) return;
-  state.left = PongLogic.clampPaddle(Arcade.pointerPos(canvas, e, W, H).y - PADDLE_H / 2);
+  state.left = PaddleDuelLogic.clampPaddle(Arcade.pointerPos(canvas, e, W, H).y - PADDLE_H / 2);
 });
 
 function step(dt) {
   const up = shell.keys.has('ArrowUp') || shell.keys.has('w');
   const down = shell.keys.has('ArrowDown') || shell.keys.has('s');
-  const event = PongLogic.step(state, dt, (down ? 1 : 0) - (up ? 1 : 0));
+  const event = PaddleDuelLogic.step(state, dt, (down ? 1 : 0) - (up ? 1 : 0));
   if (event === 'bounce') shell.sound('bounce');
   if (event === 'hit') shell.sound('hit');
   if (event !== 'point') return;
@@ -37,8 +37,8 @@ function step(dt) {
   shell.stat('CPU', state.score.right);
   shell.say(`${state.score.left} to ${state.score.right}`);
   if (state.winner === 'left') {
-    const wins = Arcade.store.get('pong:wins', 0) + 1;
-    Arcade.store.set('pong:wins', wins);
+    const wins = Arcade.store.get('paddleduel:wins', 0) + 1;
+    Arcade.store.set('paddleduel:wins', wins);
     shell.hub(`${wins} ${wins === 1 ? 'win' : 'wins'}`);
     shell.over({ title: 'You win', text: `${state.score.left} to ${state.score.right}.`, win: true });
   } else if (state.winner === 'right') {

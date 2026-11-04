@@ -12,3 +12,6 @@ Thumbs.db
 
 # Node modules (if you ever add a build process)
 node_modules/
+
+# Packages built for the store
+dist/

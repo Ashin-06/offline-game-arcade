@@ -1,14 +1,14 @@
-const { ROWS, COLS } = TetrisLogic;
+const { ROWS, COLS } = StackDropLogic;
 const CELL = 30;
 const COLORS = [null, '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877F5'];
 const canvas = document.getElementById('board');
 const ctx = Arcade.hidpi(canvas, COLS * CELL, ROWS * CELL);
-let state = TetrisLogic.create();
+let state = StackDropLogic.create();
 let sinceDrop = 0;
 
 const shell = Arcade.game({
-  id: 'tetris',
-  title: 'Tetris',
+  id: 'stackdrop',
+  title: 'Stack Drop',
   stats: ['Lines', 'Level'],
   how: 'Fill rows to clear them. <kbd>Left</kbd>/<kbd>Right</kbd> move, <kbd>Up</kbd> turns, <kbd>Down</kbd> drops one row and <kbd>Space</kbd> drops all the way. The pace rises every ten lines.',
   keys: ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' '],
@@ -20,23 +20,23 @@ const shell = Arcade.game({
     { key: 'ArrowRight', label: '▶', name: 'Move right', repeat: true },
   ],
   onStart() {
-    state = TetrisLogic.create();
+    state = StackDropLogic.create();
     sinceDrop = 0;
     updateStats();
   },
   onKey(key, down) {
     if (!down) return;
-    if (key === 'ArrowLeft' && TetrisLogic.move(state, -1)) shell.sound('move');
-    if (key === 'ArrowRight' && TetrisLogic.move(state, 1)) shell.sound('move');
-    if (key === 'ArrowUp' && TetrisLogic.turn(state)) shell.sound('turn');
-    if (key === 'ArrowDown') { sinceDrop = 0; settled(TetrisLogic.drop(state)); }
-    if (key === ' ') { sinceDrop = 0; settled(TetrisLogic.hardDrop(state)); }
+    if (key === 'ArrowLeft' && StackDropLogic.move(state, -1)) shell.sound('move');
+    if (key === 'ArrowRight' && StackDropLogic.move(state, 1)) shell.sound('move');
+    if (key === 'ArrowUp' && StackDropLogic.turn(state)) shell.sound('turn');
+    if (key === 'ArrowDown') { sinceDrop = 0; settled(StackDropLogic.drop(state)); }
+    if (key === ' ') { sinceDrop = 0; settled(StackDropLogic.hardDrop(state)); }
   },
 });
 
 function updateStats() {
   shell.stat('Lines', state.lines);
-  shell.stat('Level', TetrisLogic.level(state));
+  shell.stat('Level', StackDropLogic.level(state));
   shell.score(state.score);
 }
 
@@ -74,9 +74,9 @@ Arcade.loop({
   running: () => shell.playing,
   step(dt) {
     sinceDrop += dt * 1000;
-    if (sinceDrop >= TetrisLogic.interval(state)) {
+    if (sinceDrop >= StackDropLogic.interval(state)) {
       sinceDrop = 0;
-      settled(TetrisLogic.drop(state));
+      settled(StackDropLogic.drop(state));
     }
   },
   render,

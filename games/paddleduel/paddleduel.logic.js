@@ -1,5 +1,5 @@
 // Paddle duel rules. Units are pixels and seconds on a fixed 1000 x 600 court.
-const PongLogic = (() => {
+const PaddleDuelLogic = (() => {
   const W = 1000;
   const H = 600;
   const PADDLE_H = 100;
@@ -122,4 +122,4 @@ const PongLogic = (() => {
 
   return { W, H, PADDLE_H, PADDLE_W, INSET, R, create, step, clampPaddle };
 })();
-if (typeof module !== 'undefined') module.exports = PongLogic;
+if (typeof module !== 'undefined') module.exports = PaddleDuelLogic;

@@ -1,14 +1,14 @@
-const { W, H, ALIEN_W, ALIEN_H, PLAYER_W, PLAYER_H, PLAYER_Y } = InvadersLogic;
+const { W, H, ALIEN_W, ALIEN_H, PLAYER_W, PLAYER_H, PLAYER_Y } = NovaSiegeLogic;
 const canvas = document.getElementById('field');
 const ctx = Arcade.hidpi(canvas, W, H);
 const ROW_COLORS = ['#ff6b81', '#ff9f6b', '#ffe27a', '#7ce38b', '#7cc4ff'];
 const stars = Array.from({ length: 70 }, () => [Math.random() * W, Math.random() * H, Math.random() * 1.4 + 0.3]);
-let state = InvadersLogic.create();
+let state = NovaSiegeLogic.create();
 let aim = null;
 
 const shell = Arcade.game({
-  id: 'invaders',
-  title: 'Space Invaders',
+  id: 'novasiege',
+  title: 'Nova Siege',
   stats: ['Lives'],
   how: 'Clear the formation before it lands. Move with <kbd>Left</kbd>/<kbd>Right</kbd> and hold <kbd>Space</kbd> to fire, or drag on the field. The march speeds up as it thins out.',
   options: [
@@ -21,7 +21,7 @@ const shell = Arcade.game({
     { key: 'ArrowRight', label: '▶', name: 'Move right' },
   ],
   onStart(opts) {
-    state = InvadersLogic.create({ speed: opts.speed });
+    state = NovaSiegeLogic.create({ speed: opts.speed });
     aim = null;
     shell.stat('Lives', state.lives);
   },
@@ -39,7 +39,7 @@ function step(dt) {
     right: k.has('ArrowRight') || k.has('d') || (aim !== null && aim > state.player + 4),
     fire: k.has(' ') || k.has('ArrowUp') || aim !== null,
   };
-  for (const event of InvadersLogic.step(state, dt, input)) {
+  for (const event of NovaSiegeLogic.step(state, dt, input)) {
     if (event === 'shoot') shell.sound('shoot');
     if (event === 'kill') { shell.sound('hit'); shell.score(state.score); }
     if (event === 'hurt') {

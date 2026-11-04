@@ -1,0 +1,7 @@
+# Left out of the store package built with git archive
+tests export-ignore
+docs export-ignore
+README.md export-ignore
+icons/logo.svg export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
