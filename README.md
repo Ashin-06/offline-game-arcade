@@ -1,22 +1,23 @@
 # Offline Game Arcade
 
-A Chrome and Edge extension with thirteen games. When a page fails because the connection is down, the tab opens the game hub, with a link back to the page once the connection returns. The toolbar button opens the hub at any time.
+A Chrome and Edge extension with twenty games. When a page fails because the connection is down, the tab opens the game hub, with a link back to the page once the connection returns. The toolbar button opens the hub at any time.
 
 Plain HTML, CSS and JavaScript: no libraries, no build step, no assets to download.
 
 ## Games
 
-| Action | Puzzle and board |
-| --- | --- |
-| Snake | Sudoku (unique solutions, three levels, notes, hints) |
-| Flipline (one-button gravity runner) | Relay (wire a generated grid back to its core) |
-| Beacon Climb (five-stage platformer) | Reversi (three CPU levels or two players) |
-| Tetris | Minesweeper (safe first click, custom boards) |
-| Space Invaders | Memory Match |
-| Breakout | 2048 |
-| Pong | |
+| Action | Board and strategy | Puzzle |
+| --- | --- | --- |
+| Snake | Chess (full rules, three CPU levels or two players) | Prism Match (match three, levels, special tiles) |
+| Lane Rush (three-lane runner) | Ludo (2 to 4 players, CPU or pass and play) | Grid Fit (fit pieces, clear rows and columns) |
+| Flipline (one-button gravity runner) | Pool (eight-ball, CPU or two players) | Sudoku (unique solutions, notes, hints) |
+| Beacon Climb (five-stage platformer) | Reversi (three CPU levels or two players) | Relay (wire a generated grid back to its core) |
+| Tetris | Sentry Path (tower defence, three maps) | Minesweeper (safe first click, custom boards) |
+| Space Invaders | | Memory Match |
+| Breakout | | 2048 |
+| Pong | | |
 
-Every game has keyboard and touch controls, saved best scores and a sound toggle. Timed and action games can be paused.
+Every game has keyboard and touch controls and a sound toggle, and action and timed games can be paused.
 
 ## Install
 
@@ -41,7 +42,7 @@ Some failures, such as a DNS error, also happen while online. For those, `backgr
 node --test
 ```
 
-Requires Node 20 or later and takes about 30 seconds. The checks cover the rules of each game, prove every Beacon Climb stage and every Flipline run can be finished, and run `background.js` against stand-ins for the browser APIs.
+Requires Node 20 or later and takes about a minute. The checks cover the rules of each game, including standard chess move counts, prove every Beacon Climb stage and every Flipline and Lane Rush run can be finished, and run `background.js` against stand-ins for the browser APIs.
 
 ## Layout
 

@@ -1,0 +1,79 @@
+.chess {
+  --cell: min(calc((100vw - 28px) / 8), calc((100dvh - 190px) / 8), 72px);
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, var(--cell));
+  grid-auto-rows: var(--cell);
+  border: 3px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.square {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  line-height: 1;
+}
+.square.light { background: #c9d0ea; }
+.square.dark { background: #5c6a9e; }
+.square.last.light { background: #e6dd9a; }
+.square.last.dark { background: #a99e4e; }
+.square.picked { background: #6be3c3 !important; }
+.square.check { background: #ff6b81 !important; }
+.square.target::after {
+  content: '';
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: rgba(13, 16, 32, 0.42);
+}
+.square.take { box-shadow: inset 0 0 0 4px rgba(13, 16, 32, 0.55); }
+.square:focus-visible { outline: 3px solid #ffb86b; outline-offset: -3px; }
+.piece { font-size: calc(var(--cell) * 0.78); }
+.piece.white { color: #ffffff; text-shadow: 0 0 2px #0d1020, 0 1px 2px #0d1020, 0 0 1px #0d1020; }
+.piece.black { color: #12162c; text-shadow: 0 0 1px #eef1fb; }
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: calc(var(--cell) * 8); min-height: 40px; }
+#status { color: var(--muted); font-size: 0.95rem; }
+#undo {
+  min-height: 38px;
+  padding: 4px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink-3);
+  color: var(--text);
+  font-family: inherit;
+  cursor: pointer;
+}
+#undo:disabled { opacity: 0.4; cursor: default; }
+#promotion {
+  position: absolute;
+  top: calc(var(--cell) * 4 - 40px);
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--ink-2);
+  transform: translateX(-50%);
+}
+#promotion button {
+  width: 58px;
+  height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--ink-3);
+  color: var(--text);
+  font-size: 2rem;
+  cursor: pointer;
+}

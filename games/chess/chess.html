@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Chess - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
+  <link rel="stylesheet" href="chess.css">
+</head>
+<body class="game" style="--accent: #c6a3ff">
+  <main class="stage">
+    <div class="chess">
+      <div id="board" role="group" aria-label="Chess board"></div>
+      <div id="promotion" role="group" aria-label="Choose a promotion" hidden></div>
+      <div class="foot">
+        <span id="status" role="status"></span>
+        <button type="button" id="undo">Undo</button>
+      </div>
+    </div>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="chess.logic.js"></script>
+  <script src="chess.js"></script>
+</body>
+</html>

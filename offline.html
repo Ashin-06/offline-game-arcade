@@ -12,7 +12,7 @@
   <main class="hub">
     <header>
       <h1 id="headline">Offline Game Arcade</h1>
-      <p id="subline">Thirteen games that need no connection.</p>
+      <p id="subline">Twenty games that need no connection.</p>
       <p id="return" class="return" hidden></p>
     </header>
     <h2>Action</h2>
@@ -20,6 +20,10 @@
       <a class="card" href="games/snake/snake.html" style="--accent: #6be3c3" data-game="snake">
         <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30h18a5 5 0 0 0 0-10H14a5 5 0 0 1 0-10h18" class="s"/><circle cx="33" cy="10" r="2.5" class="f"/></svg>
         <span class="card-text"><strong>Snake</strong><small>Grow without biting yourself</small><em></em></span>
+      </a>
+      <a class="card" href="games/lanerush/lanerush.html" style="--accent: #6be3c3" data-game="lanerush">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M14 6L5 34M26 6l9 28M20 8v4M20 16v5M20 26v7" class="s l"/><circle cx="26" cy="28" r="3.5" class="f"/></svg>
+        <span class="card-text"><strong>Lane Rush</strong><small>Three lanes: dodge, jump and slide</small><em></em></span>
       </a>
       <a class="card" href="games/flipline/flipline.html" style="--accent: #6be3c3" data-game="flipline">
         <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 8h32M4 32h32" class="s"/><path d="M12 28c5-14 9-16 15-16" class="s l"/><rect x="26" y="10" width="7" height="7" rx="2" class="f"/></svg>
@@ -46,8 +50,39 @@
         <span class="card-text"><strong>Pong</strong><small>Beat the CPU paddle</small><em></em></span>
       </a>
     </nav>
-    <h2>Puzzle and board</h2>
-    <nav class="grid" aria-label="Puzzle and board games">
+    <h2>Board and strategy</h2>
+    <nav class="grid" aria-label="Board and strategy games">
+      <a class="card" href="games/chess/chess.html" style="--accent: #c6a3ff" data-game="chess">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 33h16M14 29h12l-2-9h-8zM16 20c-3-3-2-9 4-12 6 3 7 9 4 12" class="s l"/><circle cx="20" cy="8" r="2" class="f"/></svg>
+        <span class="card-text"><strong>Chess</strong><small>Full rules against the CPU or a friend</small><em></em></span>
+      </a>
+      <a class="card" href="games/ludo/ludo.html" style="--accent: #ffd24d" data-game="ludo">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="6" width="28" height="28" rx="4" class="s l"/><path d="M6 20h28M20 6v28" class="s l"/><circle cx="13" cy="13" r="3" class="f"/><circle cx="27" cy="27" r="3" class="f"/></svg>
+        <span class="card-text"><strong>Ludo</strong><small>Race four tokens home, up to four players</small><em></em></span>
+      </a>
+      <a class="card" href="games/pool/pool.html" style="--accent: #6be3c3" data-game="pool">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="15" cy="24" r="7" class="f"/><circle cx="27" cy="16" r="5" class="s l"/><path d="M3 37L11 29" class="s"/></svg>
+        <span class="card-text"><strong>Pool</strong><small>Eight-ball against the CPU or a friend</small><em></em></span>
+      </a>
+      <a class="card" href="games/reversi/reversi.html" style="--accent: #7ce38b" data-game="reversi">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="13" r="7" class="f"/><circle cx="28" cy="13" r="7" class="s l"/><circle cx="13" cy="28" r="7" class="s l"/><circle cx="28" cy="28" r="7" class="f"/></svg>
+        <span class="card-text"><strong>Reversi</strong><small>Outflank the CPU or a friend</small><em></em></span>
+      </a>
+      <a class="card" href="games/sentrypath/sentrypath.html" style="--accent: #ffb86b" data-game="sentrypath">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 30h13V12h21" class="s"/><rect x="21" y="19" width="11" height="11" rx="2" class="f"/><path d="M26.5 19v-5" class="s l"/></svg>
+        <span class="card-text"><strong>Sentry Path</strong><small>Tower defence on three maps</small><em></em></span>
+      </a>
+    </nav>
+    <h2>Puzzle</h2>
+    <nav class="grid" aria-label="Puzzle games">
+      <a class="card" href="games/prismmatch/prismmatch.html" style="--accent: #ff9eae" data-game="prismmatch">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="12" cy="12" r="6" class="f"/><path d="M28 6l6 11H22z" class="f"/><rect x="6" y="23" width="11" height="11" rx="2" class="s l"/><circle cx="28" cy="28" r="6" class="f"/></svg>
+        <span class="card-text"><strong>Prism Match</strong><small>Line up three, chain the falls</small><em></em></span>
+      </a>
+      <a class="card" href="games/gridfit/gridfit.html" style="--accent: #6bb4ff" data-game="gridfit">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="6" y="6" width="28" height="28" rx="3" class="s l"/><path d="M6 15h28M6 25h28M15 6v28M25 6v28" class="s l"/><path d="M6 25h19v9H6zM15 15h10v10H15z" class="f"/></svg>
+        <span class="card-text"><strong>Grid Fit</strong><small>Fit the pieces, clear rows and columns</small><em></em></span>
+      </a>
       <a class="card" href="games/sudoku/sudoku.html" style="--accent: #7cc4ff" data-game="sudoku">
         <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="27" height="27" rx="3" class="s l"/><path d="M16 7v27M25 7v27M7 16h27M7 25h27" class="s l"/><rect x="17" y="17" width="7" height="7" class="f"/></svg>
         <span class="card-text"><strong>Sudoku</strong><small>Three levels, unique solutions</small><em></em></span>
@@ -55,10 +90,6 @@
       <a class="card" href="games/relay/relay.html" style="--accent: #6be3c3" data-game="relay">
         <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 34V6M6 20h28" class="s"/><rect x="14" y="14" width="12" height="12" rx="3" class="f"/><circle cx="34" cy="20" r="2.5" class="f"/><circle cx="6" cy="20" r="2.5" class="f"/></svg>
         <span class="card-text"><strong>Relay</strong><small>Wire the grid to the core</small><em></em></span>
-      </a>
-      <a class="card" href="games/reversi/reversi.html" style="--accent: #7ce38b" data-game="reversi">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="13" r="7" class="f"/><circle cx="28" cy="13" r="7" class="s l"/><circle cx="13" cy="28" r="7" class="s l"/><circle cx="28" cy="28" r="7" class="f"/></svg>
-        <span class="card-text"><strong>Reversi</strong><small>Outflank the CPU or a friend</small><em></em></span>
       </a>
       <a class="card" href="games/minesweeper/minesweeper.html" style="--accent: #ffb86b" data-game="minesweeper">
         <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="8" class="f"/><path d="M20 6v5M20 29v5M6 20h5M29 20h5M10 10l4 4M26 26l4 4M30 10l-4 4M14 26l-4 4" class="s"/></svg>

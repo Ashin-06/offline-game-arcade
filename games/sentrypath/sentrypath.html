@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sentry Path - Offline Game Arcade</title>
+  <link rel="icon" href="../../icons/icon48.png">
+  <link rel="stylesheet" href="../../shared/arcade.css">
+  <link rel="stylesheet" href="sentrypath.css">
+</head>
+<body class="game" style="--accent: #ffb86b">
+  <main class="stage">
+    <div class="sentry">
+      <canvas id="field" width="720" height="480" role="img" aria-label="Map with a path enemies walk along"></canvas>
+      <div class="tool-bar">
+        <div id="towers" role="group" aria-label="Choose a tower"></div>
+        <button type="button" id="upgrade">Upgrade</button>
+        <button type="button" id="sell">Sell</button>
+        <button type="button" id="wave">Next wave</button>
+        <button type="button" id="fast" aria-pressed="false">Speed x2</button>
+      </div>
+    </div>
+  </main>
+  <script src="../../shared/arcade.js"></script>
+  <script src="sentrypath.logic.js"></script>
+  <script src="sentrypath.js"></script>
+</body>
+</html>

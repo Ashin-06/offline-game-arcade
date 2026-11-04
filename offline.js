@@ -26,7 +26,7 @@ function showConnection() {
     subline.textContent = 'Pick a game while the connection is down.';
   } else {
     headline.textContent = 'Offline Game Arcade';
-    subline.textContent = 'Thirteen games that need no connection.';
+    subline.textContent = 'Twenty games that need no connection.';
   }
   returnBox.hidden = !(from && navigator.onLine);
   if (from && navigator.onLine) {
